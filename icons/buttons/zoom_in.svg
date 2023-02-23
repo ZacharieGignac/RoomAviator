@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Zoom_In</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="zoom-in_16" fill="#000000">
+            <g id="icon">
+                <path d="M6.5,12 C3.467,12 1,9.533 1,6.5 C1,3.467 3.467,1 6.5,1 C9.533,1 12,3.467 12,6.5 C12,9.533 9.533,12 6.5,12 M15.854,15.146 C16.049,15.342 16.049,15.658 15.854,15.854 C15.756,15.951 15.628,16 15.5,16 C15.372,16 15.244,15.951 15.146,15.854 L10.724,11.431 C9.586,12.406 8.112,13 6.5,13 C2.916,13 0,10.084 0,6.5 C0,2.916 2.916,0 6.5,0 C10.084,0 13,2.916 13,6.5 C13,8.112 12.406,9.586 11.431,10.724 L15.854,15.146 Z M9.5,6 L7,6 L7,3.5 C7,3.224 6.776,3 6.5,3 C6.224,3 6,3.224 6,3.5 L6,6 L3.5,6 C3.224,6 3,6.224 3,6.5 C3,6.776 3.224,7 3.5,7 L6,7 L6,9.5 C6,9.776 6.224,10 6.5,10 C6.776,10 7,9.776 7,9.5 L7,7 L9.5,7 C9.776,7 10,6.776 10,6.5 C10,6.224 9.776,6 9.5,6 Z" id="fill"></path>
+            </g>
+        </g>
+        <g id="slices" transform="translate(-22.000000, -1187.000000)"></g>
+    </g>
+</svg>

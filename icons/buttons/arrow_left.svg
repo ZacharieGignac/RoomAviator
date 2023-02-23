@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Arrow_Left</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="arrow-left-optical_16" transform="translate(3.000000, 1.000000)" fill="#000000">
+            <g id="icon">
+                <path d="M1.23663562,6.9999 L7.84092115,0.8659 C8.04345124,0.6779 8.0544801,0.3609 7.86598676,0.1589 C7.67749341,-0.0421 7.35966154,-0.0541 7.15713146,0.1339 L0.159817246,6.6339 C0.0575495787,6.7289 0.0004,6.8609 0.0004,6.9999 C0.0004,7.1389 0.0575495787,7.2709 0.159817246,7.3659 L7.15713146,13.8689 C7.254386,13.9589 7.37670615,14.0029 7.4990263,14.0029 C7.63337795,14.0029 7.76772959,13.9499 7.86598676,13.8439 C8.0544801,13.6419 8.04345124,13.3259 7.84092115,13.1379 L1.23663562,6.9999 Z" id="fill"></path>
+            </g>
+        </g>
+        <g id="slices" transform="translate(0.000000, -69.000000)"></g>
+    </g>
+</svg>

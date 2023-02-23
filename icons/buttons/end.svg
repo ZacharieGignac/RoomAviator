@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>End</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cancel_16" transform="translate(2.000000, 2.000000)" fill="#000000">
+            <g id="icon">
+                <path d="M6.707,6 L11.853,0.854 C12.049,0.658 12.049,0.342 11.853,0.146 C11.658,-0.049 11.342,-0.049 11.146,0.146 L6,5.293 L0.853,0.146 C0.658,-0.049 0.342,-0.049 0.146,0.146 C-0.049,0.342 -0.049,0.658 0.146,0.854 L5.293,6 L0.146,11.146 C-0.049,11.342 -0.049,11.658 0.146,11.854 C0.244,11.951 0.372,12 0.5,12 C0.628,12 0.756,11.951 0.853,11.854 L6,6.707 L11.146,11.854 C11.244,11.951 11.372,12 11.5,12 C11.628,12 11.756,11.951 11.853,11.854 C12.049,11.658 12.049,11.342 11.853,11.146 L6.707,6 Z" id="fill"></path>
+            </g>
+        </g>
+        <g id="slices" transform="translate(0.000000, -267.000000)"></g>
+    </g>
+</svg>

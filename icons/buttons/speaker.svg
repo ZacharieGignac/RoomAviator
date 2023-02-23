@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Speaker</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="speaker-off_16" transform="translate(4.000000, 0.000000)" fill="#000000">
+            <g id="icon">
+                <path d="M8.547,0.0568 C8.822,0.1708 9,0.4368 9,0.7348 L9,15.2658 C9,15.5638 8.822,15.8288 8.547,15.9438 C8.455,15.9818 8.36,15.9998 8.265,15.9998 C8.074,15.9998 7.887,15.9248 7.746,15.7838 L3.265,10.9998 L2,10.9998 C0.898,10.9998 0,10.1028 0,8.9998 L0,6.9998 C0,5.8978 0.898,4.9998 2,4.9998 L3.265,4.9998 L7.735,0.2278 C7.739,0.2238 7.742,0.2198 7.746,0.2158 C7.957,0.0048 8.271,-0.0582 8.547,0.0568 Z M8,14.5928 L8,1.4068 L3.846,5.8418 C3.752,5.9428 3.62,5.9998 3.481,5.9998 L2,5.9998 C1.449,5.9998 1,6.4478 1,6.9998 L1,8.9998 C1,9.5518 1.449,9.9998 2,9.9998 L3.481,9.9998 C3.62,9.9998 3.752,10.0578 3.846,10.1578 L8,14.5928 Z" id="fill"></path>
+            </g>
+        </g>
+        <g id="slices" transform="translate(-20.000000, -952.000000)"></g>
+    </g>
+</svg>
