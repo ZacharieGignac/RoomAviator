@@ -124,6 +124,23 @@ function standbyDeactivate() {
     jxapi.Command.Standby.Deactivate();
 }
 
+function showHalfwakeScreen() {
+    var standby = document.querySelector('#halfwake');
+    standby.style.display = 'block';
+    setTimeout(function () {
+        standby.style.opacity = 1;
+    }, 10);
+
+}
+function hideHalfwakeScreen() {
+    var standby = document.querySelector('#halfwake');
+    standby.style.opacity = 0;
+    setTimeout(function () {
+        standby.style.display = 'none';
+    }, 200);
+
+}
+
 function showUIXPanel() {
     fpcontainer.style.display = 'block';
     setTimeout(function () {
@@ -350,7 +367,7 @@ function loadUiExtensionsPanels(uiext) {
                                         btn.textContent = btnunit.Name;
                                         btn.setAttribute("tag", "groupbuttonunit");
                                         btn.onmousedown = () => { xapiGroupButtonPressed(widget.WidgetId, btnunit.Key) };
-                                        btn.onmouseup = () => { xapiGroupButtonReleased(widget.WidgetId.btnunit.Key) };
+                                        btn.onmouseup = () => { xapiGroupButtonReleased(widget.WidgetId, btnunit.Key) };
 
                                         buttonGroup.appendChild(btn);
                                     }
@@ -520,19 +537,35 @@ async function watchStandby(xapi) {
     let csb = await xapi.Status.Standby.State.get();
     if (csb == 'Standby') {
         setLed(true);
+        hideHalfwakeScreen();
         showStandbyScreen();
-    } else {
+    }
+    else if (csb == 'Halfwake') {
         setLed(false);
         hideStandbyScreen();
+        showHalfwakeScreen();
+    }
+    else {
+        setLed(false);
+        hideStandbyScreen();
+        hideHalfwakeScreen();
     }
 
-    xapi.Status.Standby.State.on(state => {
-        if (state == 'Standby') {
+    xapi.Status.Standby.State.on(csb => {
+        if (csb == 'Standby') {
             setLed(true);
+            hideHalfwakeScreen();
             showStandbyScreen();
-        } else {
+        }
+        else if (csb == 'Halfwake') {
             setLed(false);
             hideStandbyScreen();
+            showHalfwakeScreen();
+        }
+        else {
+            setLed(false);
+            hideStandbyScreen();
+            hideHalfwakeScreen();
         }
     });
 }
@@ -576,7 +609,7 @@ jxapi = jsxapi
             //console.log(action);
             try {
                 let element = document.getElementById(action.WidgetId);
-                console.log(element);
+                //console.log(element);
                 if (element.type == 'checkbox') {
                     element.checked = action.Value == 'on' ? true : false;
                 }

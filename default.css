@@ -1,5 +1,5 @@
 body {
-    font-family: Calibri, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: bold;
 }
 
@@ -112,6 +112,40 @@ body {
 .standby.show {
     display: block;
     opacity: 1;
+}
+
+.halfwake {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: black;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.halfwake.show {
+    opacity: 1;
+}
+
+.halfwake-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.halfwake-white-text {
+    color: white;
+    font-size: 2em;
+    margin: 0;
+    text-align: center;
 }
 
 .uixpanel {
@@ -494,9 +528,11 @@ body {
 .spinner-btn img {
     filter: invert(1);
 }
+
 .spinner-btn:active img {
     filter: none;
 }
+
 .spinner-value {
     display: flex;
     align-items: center;
