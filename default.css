@@ -515,12 +515,12 @@ body {
     color: black;
 }
 
-.spinner-up {
+.spinner-right {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
 }
 
-.spinner-down {
+.spinner-left {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
 }
@@ -541,4 +541,22 @@ body {
     height: 40px;
     font-size: 16px;
     color: white;
+}
+
+.volumecontrol {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+#volumepopup {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100px;
+    display: none;
+    background-color: white;
+    border-radius: 20px;
+    z-index: 999;
 }

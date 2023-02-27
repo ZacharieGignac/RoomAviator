@@ -3,6 +3,10 @@ var uipanels;
 var jxapi;
 var floatingPanels = [];
 
+
+var currentMuteStatus;
+var popupVolumeTimeout;
+
 function openTab(evt, tabName) {
     // Declare all variables
     var i, tabcontent, tablinks;
@@ -379,13 +383,13 @@ function loadUiExtensionsPanels(uiext) {
                                     spinnerDiv.classList.add("spinner");
 
                                     const spinnerUpButton = document.createElement("button");
-                                    spinnerUpButton.classList.add("spinner-btn", "spinner-up");
+                                    spinnerUpButton.classList.add("spinner-btn", "spinner-right");
                                     spinnerUpButton.onclick = () => { xapiSpinnerClick(widget.WidgetId, 'increment') }
                                     spinnerUpButton.onmousedown = () => { xapiSpinnerPress(widget.WidgetId, 'increment') }
                                     spinnerUpButton.onmouseup = () => { xapiSpinnerRelease(widget.WidgetId, 'increment') }
 
                                     const spinnerUpImg = document.createElement("img");
-                                    spinnerUpImg.setAttribute("src", "icons/buttons/arrow_up.svg");
+                                    spinnerUpImg.setAttribute("src", "icons/buttons/arrow_down.svg");
 
                                     spinnerUpButton.appendChild(spinnerUpImg);
                                     spinnerDiv.appendChild(spinnerUpButton);
@@ -398,13 +402,13 @@ function loadUiExtensionsPanels(uiext) {
                                     spinnerDiv.appendChild(spinnerValueSpan);
 
                                     const spinnerDownButton = document.createElement("button");
-                                    spinnerDownButton.classList.add("spinner-btn", "spinner-down");
+                                    spinnerDownButton.classList.add("spinner-btn", "spinner-left");
                                     spinnerDownButton.onclick = () => { xapiSpinnerClick(widget.WidgetId, 'decrement') }
                                     spinnerDownButton.onmousedown = () => { xapiSpinnerPress(widget.WidgetId, 'decrement') }
                                     spinnerDownButton.onmouseup = () => { xapiSpinnerRelease(widget.WidgetId, 'decrement') }
 
                                     const spinnerDownImg = document.createElement("img");
-                                    spinnerDownImg.setAttribute("src", "icons/buttons/arrow_down.svg");
+                                    spinnerDownImg.setAttribute("src", "icons/buttons/arrow_up.svg");
 
                                     spinnerDownButton.appendChild(spinnerDownImg);
                                     spinnerDiv.appendChild(spinnerDownButton);
@@ -532,9 +536,93 @@ function setLed(value) {
 function setSystemName(name) {
     document.getElementById('systemname').innerHTML = name;
 }
+function showVolumePopup() {
+    const volumepopup = document.getElementById("volumepopup");
+    volumepopup.style.display = "block";
+    volumepopup.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 100,
+        fill: "forwards",
+    });
+}
+
+function hideVolumePopup() {
+    const volumepopup = document.getElementById("volumepopup");
+    volumepopup.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 100,
+        fill: "forwards",
+    }).onfinish = function () {
+        volumepopup.style.display = "none";
+    };
+}
+async function handleVolume() {
+    var vol_level = document.getElementById('vol_level');
+    var vol_level_sliderr = document.getElementById('vol_level_slider');
+    var vol = await jxapi.Status.Audio.Volume.get();
+    vol_level.innerHTML = vol;
+    vol_level_sliderr.value = vol;
+
+    jxapi.Status.Audio.Volume.on(vol => {
+        vol_level.innerHTML = vol;
+        vol_level_sliderr.value = vol;
+        popupVolume();
+    });
+}
+
+async function handleMute() {
+    var smallMuteImg = document.getElementById('mic_mutetoggle_img');
+    currentMuteStatus = await jxapi.Status.Audio.Microphones.Mute.get();
+    if (currentMuteStatus == 'Off') {
+        smallMuteImg.src = 'icons/buttons/mic.svg';
+    }
+    else {
+        smallMuteImg.src = 'icons/buttons/mic_muted.svg';
+    }
+
+
+    jxapi.Status.Audio.Microphones.Mute.on(value => {
+        currentMuteStatus = value;
+        if (currentMuteStatus == 'Off') {
+            smallMuteImg.src = 'icons/buttons/mic.svg';
+        }
+        else {
+            smallMuteImg.src = 'icons/buttons/mic_muted.svg';
+        }
+    });
+
+}
+
+function volumeIncrease() {
+    jxapi.Command.Audio.Volume.Increase({ Steps: 5 });
+}
+function volumeDecrease() {
+    jxapi.Command.Audio.Volume.Decrease({ Steps: 5 });
+}
+
+function micMute() {
+    jxapi.Command.Audio.Microphones.Mute();
+}
+function micUnmute() {
+    jxapi.Command.Audio.Microphones.Unmute();
+}
+function toggleMute() {
+    jxapi.Command.Audio.Microphones.ToggleMute();
+}
+
+function popupVolume() {
+    if (popupVolumeTimeout == undefined) {
+        showVolumePopup();
+    }
+    
+    popupVolumeTimeout = setTimeout(() => {
+        hideVolumePopup()
+        clearTimeout(popupVolumeTimeout);
+        popupVolumeTimeout = undefined;
+    },3000);
+}
+
 
 async function watchStandby(xapi) {
-    let csb = await xapi.Status.Standby.State.get();
+    let csb = await xapi.Status.Standby.State.get({ Steps: 5 });
     if (csb == 'Standby') {
         setLed(true);
         hideHalfwakeScreen();
@@ -583,6 +671,12 @@ jxapi = jsxapi
 
         var systemname = await xapi.Config.SystemUnit.Name.get();
         setSystemName(systemname);
+
+        /* Handle volume */
+        handleVolume();
+
+        /* Handle mute */
+        handleMute();
 
         /* Get current UI elements and render HTML */
         var uiext = await xapi.Command.UserInterface.Extensions.List({});

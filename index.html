@@ -27,6 +27,22 @@
                     </div>
 
                 </div>
+                <div class="volumecontrol">
+                    <div class="spinner">
+                        <button id="vol_up" class="spinner-btn spinner-right" onclick="volumeDecrease();"><img
+                                src="icons/buttons/arrow_down.svg"></button>
+                        <span class="spinner-value" id="vol_level">110</span>
+                        <button id="vol_down" class="spinner-btn spinner-left" onclick="volumeIncrease();"><img
+                                src="icons/buttons/arrow_up.svg"></button>
+                    </div>
+                    <button id="mic_mutetoggle" class="round-button-inverted" onclick="toggleMute();"><img
+                            id="mic_mutetoggle_img" src="icons/buttons/mic.svg"></button>
+                </div>
+                <div id="volumepopup">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <input type="range" style="width: 350px;" min="0" max="100" value="50" id="vol_level_slider">
+                      </div>
+                </div>
             </div>
             <div class="fpcontainer"></div>
             <div id="standby" class="standby" onclick="standbyDeactivate()"></div>
