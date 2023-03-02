@@ -251,6 +251,7 @@ function showPrompt(prompt) {
                 option.style.alignItems = "center";
                 option.style.width = "100%";
                 option.style.height = "50px";
+                option.style.cursor = 'pointer';
                 option.innerHTML = prompt[`Option.${i}`];
     
                 option.onclick = () => respondToPrompt(prompt.FeedbackId, i);
