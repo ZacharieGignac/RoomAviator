@@ -220,6 +220,68 @@ function hideCallingScreen() {
 
 }
 
+function respondToPrompt(feedbackId, optionId) {
+    jxapi.Command.UserInterface.Message.Prompt.Response({
+        FeedbackId: feedbackId,
+        OptionId: optionId
+    });
+    hidePrompt();
+}
+function showPrompt(prompt) {
+    setTimeout(() => {
+        var promptcontainer = document.getElementById('promptcontainer');
+        var promptpanel = document.getElementById('promptpanel');
+        var prompttitle = document.getElementById('prompttitle');
+        var prompttext = document.getElementById('prompttext');
+        var promptoptions = document.getElementById('promptoptions');
+        prompttitle.innerHTML = prompt.Title;
+        prompttext.innerHTML = prompt.Text;
+        promptcontainer.style.display = 'block';
+        promptcontainer.onclick = () => { clearPrompt(prompt) };
+    
+        while(promptoptions.firstChild) {
+            promptoptions.removeChild(promptoptions.firstChild);
+        }
+    
+        for (let i = 1; i <= 5; i++) {
+            if (prompt[`Option.${i}`]) {
+                var option = document.createElement("div");
+                option.style.display = "flex";
+                option.style.justifyContent = "center";
+                option.style.alignItems = "center";
+                option.style.width = "100%";
+                option.style.height = "50px";
+                option.innerHTML = prompt[`Option.${i}`];
+    
+                option.onclick = () => respondToPrompt(prompt.FeedbackId, i);
+    
+                promptoptions.appendChild(option);
+            }
+        }
+    
+    
+        setTimeout(function () {
+            promptcontainer.style.opacity = 1;
+        }, 10);
+    },250);
+
+
+}
+
+
+function hidePrompt() {
+    var promptcontainer = document.getElementById('promptcontainer');
+    promptcontainer.style.opacity = 0;
+    setTimeout(function () {
+        promptcontainer.style.display = 'none';
+    }, 200);
+}
+function clearPrompt(prompt) {
+    jxapi.Command.UserInterface.Message.Prompt.Clear(
+        { FeedbackId: prompt.FeedbackId });
+    hidePrompt();
+}
+
 function showUIXPanel() {
     fpcontainer.style.display = 'block';
     setTimeout(function () {
@@ -723,6 +785,16 @@ async function handleMute() {
 
 }
 
+async function handlePrompts() {
+    jxapi.Event.UserInterface.Message.Prompt.Display.on(prompt => {
+        showPrompt(prompt);
+        if (prompt.Duration != 0) {
+            setTimeout(hidePrompt, prompt.Duration * 1000);
+        }
+    });
+
+}
+
 function volumeIncrease() {
     jxapi.Command.Audio.Volume.Increase({ Steps: 5 });
 }
@@ -949,17 +1021,20 @@ jxapi = jsxapi
         handleCallDisconnect();
         handleCallSuccessful();
 
+        /* Handle prompts */
+        handlePrompts();
 
         /* Create default buttons */
         createDefaultButtons();
 
         /* Create default in call buttons */
         createDefaultIncallButtons();
-        
+
 
 
         /* Stop propagation on panels */
         addStopPropagation('call_panel');
+        addStopPropagation('promptpanel');
 
 
         /* Get current UI elements and render HTML */

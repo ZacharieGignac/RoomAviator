@@ -691,3 +691,32 @@ body {
     
   }
   
+
+.promptcontainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.promptpanel {
+    width: 600px;
+    max-height: 600px;
+    overflow-y: auto;
+    background-color: #000;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    pointer-events:  auto;
+}
