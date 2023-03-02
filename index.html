@@ -9,6 +9,7 @@
 
 </head>
 
+
 <body>
 
     <div class="outer-div">
@@ -31,7 +32,7 @@
                     <div class="spinner">
                         <button id="vol_up" class="spinner-btn spinner-right" onclick="volumeDecrease();"><img
                                 src="icons/buttons/arrow_down.svg"></button>
-                        <span class="spinner-value" id="vol_level">110</span>
+                        <span class="spinner-value vol_level" id="vol_level">110</span>
                         <button id="vol_down" class="spinner-btn spinner-left" onclick="volumeIncrease();"><img
                                 src="icons/buttons/arrow_up.svg"></button>
                     </div>
@@ -41,10 +42,50 @@
                 <div id="volumepopup">
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                         <input type="range" style="width: 350px;" min="0" max="100" value="50" id="vol_level_slider">
-                      </div>
+                    </div>
+                </div>
+                <div id="errorpopup">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <h3 id="errorpopuptext">
+                            </h2>
+                    </div>
                 </div>
             </div>
+            <div class="callcontainer" id="default_call">
+                <div class="callpanel" id="call_panel">
+                    <h2>Call</h2>
+                    <h3 id="callpanelerror" style="display:none;color:red;"></h3>
+                    <input type="text" id="callpanelnumber" class="cisco-textbox" placeholder="Number or address">
+                    <button id="callpanelcall" class="cisco-button" onclick="dial()"
+                        style="background-color:rgb(43, 145, 43);">Call</button>
+                    <br><br><br><br>
+                </div>
+
+            </div>
             <div class="fpcontainer"></div>
+            <div id="calling" class="calling">
+                <div class="calling-container">
+                    <span class="calling-white-text" id="callingtext"></span>
+                </div>
+            </div>
+            <div id="incall" class="incall">
+                <table class="incalliconstable" id="incalliconsrow1">
+                    <tr>
+
+                    </tr>
+                </table>
+                <div class="volumecontrol">
+                    <div class="spinner">
+                        <button id="vol_up" class="spinner-btn spinner-right" onclick="volumeDecrease();"><img
+                                src="icons/buttons/arrow_down.svg"></button>
+                        <span class="spinner-value vol_level" id="vol_level">110</span>
+                        <button id="vol_down" class="spinner-btn spinner-left" onclick="volumeIncrease();"><img
+                                src="icons/buttons/arrow_up.svg"></button>
+                    </div>
+                    <button id="mic_mutetoggle" class="round-button-inverted" onclick="toggleMute();"><img
+                            id="mic_mutetoggle_img" src="icons/buttons/mic.svg"></button>
+                </div>
+            </div>
             <div id="standby" class="standby" onclick="standbyDeactivate()"></div>
             <div id="halfwake" class="halfwake" onclick="standbyDeactivate()">
                 <div class="halfwake-container">
@@ -52,6 +93,7 @@
                 </div>
 
             </div>
+
             <div class="invisidiv" id="invisidiv">widget hell</div>
         </div>
         <div id="led"></div>
@@ -61,5 +103,11 @@
 </body>
 <script src="js/config.js"></script>
 <script src="js/codec.js"></script>
+
+
+<script>
+    
+
+</script>
 
 </html>

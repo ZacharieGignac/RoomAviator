@@ -108,6 +108,43 @@ function createIconTextDivForAction(id, text, icon, color) {
 
 
 
+function addIncallIconFirstRow() {
+    // Get the table element
+    var table = document.getElementById('incalliconsrow1');
+
+    // Create a new table cell
+    var cell = document.createElement("td");
+
+    // Set the cell's height and content
+    cell.style.height = "150px";
+    cell.textContent = "New Cell";
+
+    // Set the cell's width
+    cell.style.width = "150px";
+
+    // Append the cell to the row
+    table.rows[0].appendChild(cell);
+}
+
+
+
+function handleCallDisconnect() {
+    jxapi.Event.CallDisconnect.on(value => {
+        if (value.CauseValue != 1) {
+            showErrorPopup(value.CauseString);
+        }
+        hideCallingScreen();
+        hideIncallScreen();
+    });
+
+}
+function handleCallSuccessful() {
+    jxapi.Event.CallSuccessful.on(value => {
+        hideCallingScreen();
+        showIncallScreen();
+    });
+}
+
 function showStandbyScreen() {
     var standby = document.querySelector('#standby');
     standby.style.display = 'block';
@@ -145,11 +182,70 @@ function hideHalfwakeScreen() {
 
 }
 
+function showIncallScreen() {
+    var incall = document.querySelector('#incall');
+    incall.style.display = 'block';
+    incall.classList.add('show');
+    setTimeout(function () {
+        incall.style.opacity = 1;
+    }, 10);
+
+}
+function hideIncallScreen() {
+    var incall = document.querySelector('#incall');
+    incall.style.opacity = 0;
+    setTimeout(function () {
+        incall.style.display = 'none';
+    }, 200);
+
+}
+
+
+function showCallingScreen(number) {
+    var calling = document.querySelector('#calling');
+    var callingtext = document.getElementById('callingtext');
+    callingtext.innerHTML = `Calling: ${number}`;
+    calling.style.display = 'block';
+    setTimeout(function () {
+        calling.style.opacity = 1;
+    }, 10);
+
+}
+function hideCallingScreen() {
+    var calling = document.querySelector('#calling');
+    calling.style.opacity = 0;
+    setTimeout(function () {
+        calling.style.display = 'none';
+    }, 200);
+
+}
+
 function showUIXPanel() {
     fpcontainer.style.display = 'block';
     setTimeout(function () {
         fpcontainer.style.opacity = 1;
     }, 10);
+}
+
+function showCallScreen() {
+    var callpanelerror = document.getElementById('callpanelerror');
+    var callpanelnumber = document.getElementById('callpanelnumber');
+    callpanelnumber.value = '';
+    callpanelerror.style.display = 'none';
+    const ds = document.getElementById('default_call');
+
+    ds.onclick = hideCallScreen;
+    ds.style.display = 'block'
+    setTimeout(() => {
+        ds.style.opacity = 1;
+    }, 10);
+}
+function hideCallScreen() {
+    const ds = document.getElementById('default_call');
+    ds.style.display = 'none'
+    setTimeout(() => {
+        ds.style.opacity = 0;
+    }, 200);
 }
 
 function hideUIXPanel() {
@@ -554,18 +650,54 @@ function hideVolumePopup() {
         volumepopup.style.display = "none";
     };
 }
-async function handleVolume() {
-    var vol_level = document.getElementById('vol_level');
-    var vol_level_sliderr = document.getElementById('vol_level_slider');
-    var vol = await jxapi.Status.Audio.Volume.get();
-    vol_level.innerHTML = vol;
-    vol_level_sliderr.value = vol;
 
-    jxapi.Status.Audio.Volume.on(vol => {
+function showErrorPopup(errortext) {
+    const errorpopup = document.getElementById("errorpopup");
+    const errorpopuptext = document.getElementById('errorpopuptext');
+    errorpopuptext.innerHTML = errortext;
+    errorpopup.style.display = "block";
+    errorpopup.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 100,
+        fill: "forwards",
+    });
+    setTimeout(() => {
+        hideErrorPopup();
+    }, 5000);
+}
+
+function hideErrorPopup() {
+    const errorpopup = document.getElementById("errorpopup");
+    errorpopup.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 100,
+        fill: "forwards",
+    }).onfinish = function () {
+        errorpopup.style.display = "none";
+    };
+}
+
+async function handleVolume() {
+    var allVolLevels = document.querySelectorAll(".vol_level");
+
+    for (const vol_level of allVolLevels) {
+        var vol_level_sliderr = document.getElementById('vol_level_slider');
+        var vol = await jxapi.Status.Audio.Volume.get();
+        vol_level.innerHTML = vol;
+        vol_level_sliderr.value = vol;
+    }
+
+    jxapi.Status.Audio.Volume.on(async vol => {
+        var allVolLevels = document.querySelectorAll(".vol_level");
+        for (const vol_level of allVolLevels) {
+            var vol_level_sliderr = document.getElementById('vol_level_slider');
+            var vol = await jxapi.Status.Audio.Volume.get();
+            vol_level.innerHTML = vol;
+            vol_level_sliderr.value = vol;
+        }
         vol_level.innerHTML = vol;
         vol_level_sliderr.value = vol;
         popupVolume();
     });
+
 }
 
 async function handleMute() {
@@ -612,14 +744,120 @@ function popupVolume() {
     if (popupVolumeTimeout == undefined) {
         showVolumePopup();
     }
-    
+
     popupVolumeTimeout = setTimeout(() => {
         hideVolumePopup()
         clearTimeout(popupVolumeTimeout);
         popupVolumeTimeout = undefined;
-    },3000);
+    }, 3000);
 }
 
+function createDefaultButtons() {
+    const gridContainer = document.querySelector('.grid-container');
+
+    const defaultButtons = [
+        {
+            id: 'default_button_call',
+            color: '#151515',
+            icon: 'icons/Camera.svg',
+            text: 'Call',
+            onclick: showCallScreen
+        }
+    ];
+
+    for (const button of defaultButtons) {
+        const div = document.createElement('div');
+        div.id = button.id;
+        div.style.display = 'flex';
+        div.style.flexDirection = 'column';
+        div.style.justifyContent = 'flex-start';
+        div.style.alignItems = 'center';
+        div.style.height = '160px';
+
+        const circle = document.createElement('div');
+        circle.style.width = '80px';
+        circle.style.height = '80px';
+        circle.style.borderRadius = '50%';
+        circle.style.backgroundColor = button.color;
+        div.appendChild(circle);
+
+        const iconElement = document.createElement('img');
+        iconElement.src = button.icon;
+        iconElement.width = 50;
+        iconElement.height = 50;
+        iconElement.style.position = 'relative';
+        iconElement.style.top = '50%';
+        iconElement.style.left = '50%';
+        iconElement.style.transform = 'translate(-47%, -45%)';
+        circle.appendChild(iconElement);
+
+        const textElement = document.createElement('p');
+        textElement.innerText = button.text;
+        textElement.style.marginTop = '5px'; // Add some top margin to the text
+        textElement.style.textAlign = 'center'; // Center the text
+        div.appendChild(textElement);
+
+        div.onclick = button.onclick;
+
+        gridContainer.appendChild(div);
+    }
+}
+
+function createDefaultIncallButtons() {
+    const incallButtonsRow1 = document.getElementById('incalliconsrow1');
+
+    const defaultButtons = [
+        {
+            id: 'default_button_call',
+            color: 'red',
+            icon: 'icons/buttons/end.svg',
+            inverticon: true,
+            text: 'End call',
+            textcolor: 'white',
+            onclick: () => { console.log('LOL') }
+        }
+    ];
+
+    for (const button of defaultButtons) {
+        const div = document.createElement('div');
+        div.id = button.id;
+        div.style.display = 'flex';
+        div.style.flexDirection = 'column';
+        div.style.justifyContent = 'flex-start';
+        div.style.alignItems = 'center';
+        div.style.height = '160px';
+
+        const circle = document.createElement('div');
+        circle.style.width = '80px';
+        circle.style.height = '80px';
+        circle.style.borderRadius = '50%';
+        circle.style.backgroundColor = button.color;
+        div.appendChild(circle);
+
+        const iconElement = document.createElement('img');
+        iconElement.src = button.icon;
+        iconElement.width = 50;
+        iconElement.height = 50;
+        iconElement.style.position = 'relative';
+        iconElement.style.top = '50%';
+        iconElement.style.left = '50%';
+        iconElement.style.transform = 'translate(-47%, -45%)';
+        iconElement.style.filter = button.inverticon ? 'invert(100%)' : '';
+        circle.appendChild(iconElement);
+
+        const textElement = document.createElement('p');
+        textElement.innerText = button.text;
+        textElement.style.marginTop = '5px'; // Add some top margin to the text
+        textElement.style.textAlign = 'center'; // Center the text
+        textElement.style.color = button.textcolor;
+        div.appendChild(textElement);
+
+        div.onclick = disconnectCall;
+
+        incallButtonsRow1.appendChild(div);
+    }
+
+}
 
 async function watchStandby(xapi) {
     let csb = await xapi.Status.Standby.State.get({ Steps: 5 });
@@ -658,6 +896,35 @@ async function watchStandby(xapi) {
     });
 }
 
+function addStopPropagation(panel) {
+    const callPanel = document.getElementById(panel);
+    callPanel.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
+
+function dial() {
+    var callnumber = document.getElementById('callpanelnumber');
+    var callpanelerror = document.getElementById('callpanelerror');
+
+    if (callnumber.value != '') {
+        callpanelerror.style.display = 'none';
+        hideCallScreen();
+        showCallingScreen(callnumber.value);
+        jxapi.Command.Dial(
+            {
+                Number: callnumber.value
+            });
+    }
+    else {
+        callpanelerror.style.display = 'block'
+        callpanelerror.innerHTML = 'Please enter number or address'
+    }
+}
+function disconnectCall() {
+    jxapi.Command.Call.Disconnect();
+}
+
 
 jxapi = jsxapi
     .connect(config.CODEC_IP, {
@@ -678,6 +945,23 @@ jxapi = jsxapi
         /* Handle mute */
         handleMute();
 
+        /* Handle call connect and disconnect */
+        handleCallDisconnect();
+        handleCallSuccessful();
+
+
+        /* Create default buttons */
+        createDefaultButtons();
+
+        /* Create default in call buttons */
+        createDefaultIncallButtons();
+        
+
+
+        /* Stop propagation on panels */
+        addStopPropagation('call_panel');
+
+
         /* Get current UI elements and render HTML */
         var uiext = await xapi.Command.UserInterface.Extensions.List({});
         loadUiExtensionsPanels(uiext);
@@ -687,17 +971,23 @@ jxapi = jsxapi
         syncWidgetsValues(currValues);
 
 
+        /* Make sure that any screens are hidden */
+        hideIncallScreen();
+        hideCallScreen();
+        hideHalfwakeScreen();
+        hideStandbyScreen();
+
         /* handle spinners ? */
-        xapi.Status.UserInterface.Extensions.Widget
-            .on(value => {
-                xapi.Status.UserInterface.Extensions.Widget.get().then(w => {
+        xapi.Status.UserInterface.Extensions.Widget.on(value => {
+            xapi.Status.UserInterface.Extensions.Widget.get().then(w => {
 
-                    var index = parseInt(value.id);
-                    var wid = w[index - 1];
+                var index = parseInt(value.id);
+                var wid = w[index - 1];
 
-                    setValue(wid.WidgetId, wid.Value, wid);
-                });
+                setValue(wid.WidgetId, wid.Value, wid);
             });
+        });
+
 
         xapi.Event.UserInterface.Extensions.Widget.Action.on(async action => {
             //console.log(action);
