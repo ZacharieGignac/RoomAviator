@@ -28,6 +28,9 @@ I'm trying to make an almost 1:1 replica of the Room Navigator.
 * Home screen with icons on the right
 * Custom panels with almost all widgets (excep spacing and directional pad)
 * Standby screen with a white led on the bezel
+* Halfwake screen
+* Volume buttons and mute toggle on homescreen
+* Volume popup with slider display
 
 ## If you find it cool...
 Consider helping by giving ideas and finding bugs. Please file issues :)
