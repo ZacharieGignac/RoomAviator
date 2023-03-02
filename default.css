@@ -685,7 +685,7 @@ body {
   }
   
   td, th {
-    border: 1px solid white;
+    border: 0px solid white;
     vertical-align: middle;
     text-align: center;
     
