@@ -29,7 +29,7 @@ function openTab(evt, tabName) {
 }
 
 
-function createIconTextDivForPanel(id, text, icon, color) {
+function createIconTextDivForPanel(id, text, icon, color, page) {
     const div = document.createElement('div');
     div.id = id;
     div.style.display = 'flex';
@@ -61,8 +61,9 @@ function createIconTextDivForPanel(id, text, icon, color) {
     textElement.style.textAlign = 'center'; // Center the text
     div.appendChild(textElement);
 
+
     div.onclick = () => {
-        displayUIXPanel(id);
+        displayUIXPanel(id, page);
     }
 
     return div;
@@ -238,11 +239,11 @@ function showPrompt(prompt) {
         prompttext.innerHTML = prompt.Text;
         promptcontainer.style.display = 'block';
         promptcontainer.onclick = () => { clearPrompt(prompt) };
-    
-        while(promptoptions.firstChild) {
+
+        while (promptoptions.firstChild) {
             promptoptions.removeChild(promptoptions.firstChild);
         }
-    
+
         for (let i = 1; i <= 5; i++) {
             if (prompt[`Option.${i}`]) {
                 var option = document.createElement("div");
@@ -253,18 +254,18 @@ function showPrompt(prompt) {
                 option.style.height = "50px";
                 option.style.cursor = 'pointer';
                 option.innerHTML = prompt[`Option.${i}`];
-    
+
                 option.onclick = () => respondToPrompt(prompt.FeedbackId, i);
-    
+
                 promptoptions.appendChild(option);
             }
         }
-    
-    
+
+
         setTimeout(function () {
             promptcontainer.style.opacity = 1;
         }, 10);
-    },250);
+    }, 250);
 
 
 }
@@ -322,21 +323,37 @@ function hideUIXPanel() {
     }, 300);
 }
 
-function displayUIXPanel(name) {
-
+function displayUIXPanel(name, page) {
+    var found;
+    var defaultTab;
     var uixPanel = document.createElement('div');
     uixPanel.className = 'uixpanel';
 
 
     for (const panel of floatingPanels) {
         if (panel.id == name) {
+            found = true;
+            defaultTab = panel.dataset.defaultOpen;
             uixPanel.appendChild(panel);
         }
     }
 
-    fpcontainer.appendChild(uixPanel);
-    document.getElementById("defaultOpen").click();
-    showUIXPanel();
+    if (found) {
+        
+        fpcontainer.appendChild(uixPanel);
+        
+        if (page == '') {
+            document.getElementById(defaultTab).click();
+        }
+        else {
+            document.getElementById(name + '_' + page).click();
+        }
+
+        
+
+        showUIXPanel();
+
+    }
 }
 
 fpcontainer.addEventListener('click', function (e) {
@@ -346,7 +363,7 @@ fpcontainer.addEventListener('click', function (e) {
 });
 
 
-function addIconTextToGrid(text, icon, id, color, actionbutton = false) {
+function addIconTextToGrid(text, icon, id, color, page, actionbutton = false) {
 
     const gridContainer = document.querySelector('.grid-container');
     var newDiv;
@@ -354,7 +371,7 @@ function addIconTextToGrid(text, icon, id, color, actionbutton = false) {
         newDiv = createIconTextDivForAction(id, text, icon, color);
     }
     else {
-        newDiv = createIconTextDivForPanel(id, text, icon, color);
+        newDiv = createIconTextDivForPanel(id, text, icon, color, page);
     }
 
 
@@ -377,7 +394,7 @@ function loadUiExtensionsPanels(uiext) {
                 var icon = panel.Icon;
                 if (panel.Icon == 'Custom') icon = 'Sliders';
 
-                addIconTextToGrid(panel.Name, `icons/${icon}.svg`, panel.PanelId, panel.Color);
+                addIconTextToGrid(panel.Name, `icons/${icon}.svg`, panel.PanelId, panel.Color, panel.Page[0].PageId);
                 var fpcontent = document.createElement('div');
                 fpcontent.id = panel.PanelId;
 
@@ -386,13 +403,17 @@ function loadUiExtensionsPanels(uiext) {
                 tabContainer.classList.add('tab');
                 fpcontent.appendChild(tabContainer);
 
-                var firstPage = true;
+                
+                fpcontent.dataset.defaultOpen = panel.PanelId + '_' + panel.Page[0].PageId;
                 for (const page of panel.Page) {
-                    const pageId = panel.PanelId + "_tab_" + page.id;
+
+                    const pageId = panel.PanelId + "_tab_" + page.PageId;
                     var tabButton = document.createElement('button');
                     tabButton.classList.add('tablinks');
-                    if (firstPage) tabButton.id = 'defaultOpen';
-                    tabButton.onclick = () => { openTab(event, pageId) }
+
+                    tabButton.id = panel.PanelId + '_' + page.PageId;
+
+                    tabButton.onclick = (event) => { openTab(event, pageId) }
 
                     tabButton.textContent = page.Name;
 
@@ -441,7 +462,13 @@ function loadUiExtensionsPanels(uiext) {
                                     widgetOptions[propvalue[0]] = propvalue[1];
                                 }
 
-
+                                if (widget.Type == 'Spacer') {
+                                    let spacerSize = widget.Options.split('=')[1];
+                                    var widgetSpacer = document.createElement('span');
+                                    widgetSpacer.classList.add('spacer');
+                                    widgetSpacer.style.width = spacerSize * 40 + "px";
+                                    fpcolumnright.appendChild(widgetSpacer);
+                                }
                                 if (widget.Type == 'Button') {
                                     var widgetButton = document.createElement('button');
 
@@ -796,6 +823,13 @@ async function handlePrompts() {
 
 }
 
+async function handlePanelEvents() {
+    jxapi.Event.UserInterface.Extensions.Panel.Open.on(event => {
+        hidePrompt();
+        displayUIXPanel(event.PanelId, event.PageId);
+    });
+}
+
 function volumeIncrease() {
     jxapi.Command.Audio.Volume.Increase({ Steps: 5 });
 }
@@ -1031,6 +1065,8 @@ jxapi = jsxapi
         /* Create default in call buttons */
         createDefaultIncallButtons();
 
+        /* Handle panel events */
+        handlePanelEvents();
 
 
         /* Stop propagation on panels */
