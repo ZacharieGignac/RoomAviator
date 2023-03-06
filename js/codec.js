@@ -291,6 +291,63 @@ function showUIXPanel() {
     }, 10);
 }
 
+
+
+function showTextinput(textinput) {
+    console.log(textinput);
+    setTimeout(() => {
+        var textinputcontainer = document.getElementById('textinputcontainer');
+        var textinputpanel = document.getElementById('textinputpanel');
+        var textinputtitle = document.getElementById('textinputtitle');
+        var textinputtext = document.getElementById('textinputtext');
+        var textinputsubmit = document.getElementById('textinputsubmit');
+        var textinputresponse = document.getElementById('textinputresponse');
+        var textinputclear = document.getElementById('textinputclear');
+        var textinputsubmit = document.getElementById('textinputsubmit');
+
+        
+        if (textinput.SubmitText) textinputsubmit.innerHTML = textinput.SubmitText;
+        if (textinput.Placeholder) textinputresponse.placeholder = textinput.Placeholder;
+        textinputtitle.innerHTML = textinput.Title;
+        textinputtext.innerHTML = textinput.Text;
+        textinputcontainer.style.display = 'block';
+        textinputcontainer.onclick = () => { clearTextinput(textinput) };
+        textinputclear.onclick = () => { clearTextinput(textinput) };
+        textinputsubmit.onclick = () => {  submitTextinput(textinput, textinputresponse.value)}
+
+        setTimeout(function () {
+            textinputcontainer.style.opacity = 1;
+        }, 10);
+    }, 250);
+
+
+}
+
+
+function hideTextinput() {
+    var textinputcontainer = document.getElementById('textinputcontainer');
+    textinputcontainer.style.opacity = 0;
+    setTimeout(function () {
+        textinputcontainer.style.display = 'none';
+    }, 200);
+}
+function clearTextinput(textinput) {
+    jxapi.Command.UserInterface.Message.TextInput.Clear(
+        { FeedbackId: textinput.FeedbackId });
+    hideTextinput();
+}
+
+function submitTextinput(textinput, text) {
+    jxapi.Command.UserInterface.Message.TextInput.Response(
+        { FeedbackId: textinput.FeedbackId, Text: text });
+        hideTextinput();
+}
+
+
+
+
+
+
 function showCallScreen() {
     var callpanelerror = document.getElementById('callpanelerror');
     var callpanelnumber = document.getElementById('callpanelnumber');
@@ -823,6 +880,12 @@ async function handlePrompts() {
 
 }
 
+async function handleTextinputs() {
+    jxapi.Event.UserInterface.Message.TextInput.Display.on(textinput => {
+        showTextinput(textinput);
+    });
+}
+
 async function handlePanelEvents() {
     jxapi.Event.UserInterface.Extensions.Panel.Open.on(event => {
         hidePrompt();
@@ -1059,6 +1122,9 @@ jxapi = jsxapi
         /* Handle prompts */
         handlePrompts();
 
+        /* Handle textinputs */
+        handleTextinputs();
+
         /* Create default buttons */
         createDefaultButtons();
 
@@ -1072,6 +1138,7 @@ jxapi = jsxapi
         /* Stop propagation on panels */
         addStopPropagation('call_panel');
         addStopPropagation('promptpanel');
+        addStopPropagation('textinputpanel');
 
 
         /* Get current UI elements and render HTML */
